@@ -1,6 +1,6 @@
-from .wine import Wine
-from .beer import Beer
-from .market import Market
+from wine import Wine
+from beer import Beer
+from market import Market
 
 """
 TODO: Доработать заготовки классов вина (Wine), пива (Beer) и магазина (Market) таким образом, чтобы через класс Market можно было:
