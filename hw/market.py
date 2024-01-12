@@ -3,13 +3,8 @@ from log_time_decorator import log_time
 
 class Market:
     def __init__(self, wines: list = None, beers: list = None) -> None:
-        self.market_wines_map, self.market_beers_map = {}, {}
-        for i in range(max(len_wines := len(wines if wines is not None else []),
-                           len_beers := len(beers if beers is not None else []))):
-            if i < len_wines:
-                self.market_wines_map[wines[i].title] = wines[i]
-            if i < len_beers:
-                self.market_beers_map[beers[i].title] = beers[i]
+        self.market_wines_map = {wine.title: wine for wine in wines}
+        self.market_beers_map = {beer.title: beer for beer in beers}
 
     def has_drink_with_title(self, title=None) -> bool:
         """
@@ -26,7 +21,7 @@ class Market:
 
         :return: list
         """
-        return sorted(list(self.market_wines_map.keys()) + list(self.market_beers_map.keys()))
+        return sorted(filter(lambda x: x.title is not None, list(self.market_wines_map.values()) + list(self.market_beers_map.values())), key=lambda x: x.title)
 
     @log_time
     def get_drinks_by_production_date(self, from_date=None, to_date=None) -> list:
@@ -35,4 +30,9 @@ class Market:
 
         :return: list
         """
-        return [x for x in (list(self.market_wines_map.values()) + list(self.market_beers_map.values())) if x.production_date >= from_date and x.production_date <= to_date]
+        products = [x for x in (list(self.market_wines_map.values()) + list(self.market_beers_map.values()))]
+        if from_date is not None:
+            products = list(filter(lambda x: x.production_date is not None and x.production_date >= from_date, products))
+        if to_date is not None:
+            products = list(filter(lambda x: x.production_date is not None and x.production_date <= to_date, products))
+        return products
